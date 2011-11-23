@@ -30,7 +30,10 @@ function dir_size($dir) {
   closedir($handle);
 
   return $mas;
+}
 
+function dir_tree() {
+  return glob(COMIC_DIR.'/*.'.COMIC_EXT, GLOB_ERR);
 }
 
 // テスト用

@@ -1,4 +1,50 @@
+var cookie_key = 'is_half_page_mode';
+
 $(function(){
+
+  change_half_mode();
+
+  // 単ページ切り替え
+  $("#switch_half_page").click(function(){
+    var value = is_half();
+
+    if (value) {
+      var new_value = 'false';
+    } else {
+      var new_value = 'true';
+    }
+    $.cookie(cookie_key, new_value);
+    change_half_mode();
+
+    image_size_reduction();
+  });
+
+  function is_half() {
+    var mode = $.cookie(cookie_key);
+
+    if (mode === null) {
+      return false;
+    } else {
+      if (mode == 'true') {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  function change_half_mode() {
+    if (is_half()) {
+      // 単ページに切り替え
+      $(".pages").hide();
+      $("#half_page").show();
+    } else {
+      // 複数ページに切り替え
+      $(".pages").show();
+      $("#half_page").hide();
+    }
+  }
+
   // 蔵書一覧 ON / OFF
   $("#paint_index").click(function(){
     var index = $("#index");
@@ -27,7 +73,7 @@ $(function(){
   });
 
   // 1 ページだけ進む
-  $("#next_half_page").click(function(){
+  $("#next_half_page, #next").click(function(){
     var id = get_current_title();
     var page = get_current_page() + 1;
     get_page(id, page);
@@ -44,7 +90,7 @@ $(function(){
   });
 
   // 1 ページ戻る
-  $("#previous_half_page").click(function(){
+  $("#previous_half_page, #previous").click(function(){
     var id = get_current_title();
     var page = get_current_page() - 1;
     if (page < 0) {
@@ -55,12 +101,16 @@ $(function(){
 
   // ページの取得
   function get_page(id, page) {
-    $.getJSON( "view.php?id=" + id + "&page=" + page, function(result) {
+    var query = "view.php?id=" + id + "&page=" + page;
+
+    $.getJSON(query, function(result) {
       set_current_title(id);
       set_current_page(page);
 
+      paint("#half_page_image", result[0]);
       paint("#page_1", result[0]);
       paint("#page_2", result[1]);
+      image_size_reduction();
     });
   }
 
@@ -87,7 +137,6 @@ $(function(){
   // 画像描画
   function paint(id, path) {
     $(id).html('<img src="' + path + '" alt="" />');
-    image_size_reduction(id);
   }
 
   // 画像縮小
@@ -98,7 +147,14 @@ $(function(){
     var window_height = $(window).height();
     var image_height = window_height - 28;
 
-    $(id + " img").css({
+    $("#half_page img").css({
+      "height": image_height + "px",
+    });
+    $("#half_page a").css({
+      "height": image_height + "px",
+    });
+
+    $(".pages img").css({
       "max-width": image_width + "px",
       "height": image_height + "px",
     });

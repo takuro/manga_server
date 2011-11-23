@@ -15,6 +15,7 @@ function start_html() {
 function end_html() {
   echo '
       <script src="http://code.jquery.com/jquery.min.js"></script>
+      <script src="js/jquery.cookie.js"></script>
       <script src="js/default.js"></script>
     </body>
     </html>';

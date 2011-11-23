@@ -2,6 +2,7 @@
 
 body {
   width: 100%;
+  height: 100%;
 }
 
 a {
@@ -33,10 +34,30 @@ a:hover {
 #menu{
   width: 100%;
   overflow: auto;
+  position: relative;
 }
 
-#page_1,
-#page_2 {
+#half_page {
+  margin:0 auto;
+  position: relative;
+  display: none;
+  text-align: center;
+}
+
+#half_page_image {
+  width: 90%;
+}
+
+#half_page a {
+  width: 4%;
+}
+
+#half_page a:hover {
+  background-color: #eee;
+  color: #aaa;
+}
+
+.pages {
   width: 50%;
 }
 
@@ -46,7 +67,10 @@ a:hover {
 }
 
 #page_2,
-#next_half_page {
+#next_half_page,
+#next,
+#previous, 
+#half_page_image {
   float: left;
 }
 
@@ -62,11 +86,10 @@ a:hover {
 
 #next_half_page,
 #previous_half_page {
-  width: 20%;
+  width: 40%;
 }
 
 #paint_index {
-  width: 50%;
   text-align: center;
   margin: 0 auto;
 }

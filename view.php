@@ -7,7 +7,7 @@
   require_once 'settings.php';
   require_once 'functions.php';
 
-  $dir = glob(COMIC_DIR.'/*.'.COMIC_EXT, GLOB_ERR);
+  $dir = dir_tree();
   cache_clean();
   
   // 漫画 ID
@@ -16,7 +16,6 @@
 
   // 現在のページ
   $page = intval($_GET["page"]);
-
 
   // ZIP ファイル読み込み
   $count = 0;
