@@ -1,0 +1,49 @@
+漫画サーバ（アプリ名）
+=========================
+
+作者
+----
+Takuro Ishii（ isitkr ）
+
+
+Web サイト
+----
+http://isitkr.org/
+
+
+これはなに？
+----
+- ZIP 形式の漫画を、ダウンロードせずにブラウザ上で閲覧できます。
+
+
+動作環境
+----
+PHP 5.4.0RC2-dev
+
+上記環境以外での動作は確認していませんが、
+5.4 特有の機能は利用していません。
+
+
+インストール
+----
+1. PHP をインストールし、動作する状態にします。
+   ZIP 関数が使えるようにしてください。
+2. 最新版を https://github.com/takuro/manga_server からダウンロードします。
+   サーバに git がインストールされているならば、以下のコマンドでもダウンロードできます。
+
+   git clone git://github.com/takuro/manga_server.git
+
+3. Web サーバの公開ディレクトリに配置します。
+4. ZIP 形式の漫画ファイルを、サーバの適当なディレクトリに配置します。
+5. キャッシュ用のディレクトリを公開ディレクトリに作成します。
+   settings.php と同じ階層に cache という名前のディレクトリを作成します。
+   アクセス権は 777 などにしてください。（Web サーバのユーザが書き込めるように）
+6. settings.php を環境に合わせて編集します。
+
+
+ライセンス
+----
+MIT License
+http://creativecommons.org/licenses/MIT/
+http://ja.wikipedia.org/wiki/MIT_License
+
