@@ -7,7 +7,7 @@
   require_once 'settings.php';
   require_once 'functions.php';
 
-  $dir = dir_tree();
+  $dir = get_dir_tree();
   cache_clean();
   
   // 漫画 ID
@@ -20,7 +20,8 @@
   // ZIP ファイル読み込み
   $count = 0;
   $read_count = 0;
-  $comic = zip_open($dir[$id]);
+  $zip_file = trim(COMIC_DIR."/".$dir[$id]);
+  $comic = zip_open($zip_file);
   if (is_resource($comic)) { 
     $file_name = "";
     while (($entry = zip_read($comic)) !== false) { 
@@ -52,7 +53,7 @@
       $count++;
     } 
   } else { 
-    die("[ERR]ZIP_OPEN"); 
+    die("[ERR]ZIP_OPEN : ".$zip_file); 
   }
 
   zip_close($comic);

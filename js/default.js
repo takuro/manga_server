@@ -18,10 +18,15 @@ $(function(){
     image_size_reduction();
   });
 
+  // ウィンドウのリサイズを取得
   $(window).resize(function() {
+    var is_half_mode = is_half();
     window_resize();
     change_half_mode();
-    image_size_reduction();
+
+    if (is_half() != is_half_mode) {
+      image_size_reduction();
+    }
   });
 
   function window_resize() {
@@ -61,11 +66,11 @@ $(function(){
   function change_half_mode() {
     if (is_half()) {
       // 単ページに切り替え
-      $(".pages").hide();
+      $("#full_page").hide();
       $("#half_page").show();
     } else {
       // 複数ページに切り替え
-      $(".pages").show();
+      $("#full_page").show();
       $("#half_page").hide();
     }
   }
@@ -88,6 +93,9 @@ $(function(){
     // 描画
     get_page(id, 0);
     $("#index").hide();
+    $("#viewer").animate({
+      height: "show"
+    }, "slow");
   });
 
   // 次のページ表示
@@ -98,7 +106,7 @@ $(function(){
   });
 
   // 1 ページだけ進む
-  $("#next_half_page, #next").click(function(){
+  $(".next").click(function(){
     var id = get_current_title();
     var page = get_current_page() + 1;
     get_page(id, page);
@@ -115,13 +123,30 @@ $(function(){
   });
 
   // 1 ページ戻る
-  $("#previous_half_page, #previous").click(function(){
+  $(".previous").click(function(){
     var id = get_current_title();
     var page = get_current_page() - 1;
     if (page < 0) {
       page = 0;
     }
     get_page(id, page);
+  });
+
+  // 次のファイルへ
+  $(".next_file").click(function(){
+    var id = get_current_title();
+    id = parseInt(id.replace(/comic_/, '')) + 1;
+    get_page("comic_" + id, 0);
+  });
+
+  // 前のファイルへ
+  $(".previous_file").click(function(){
+    var id = get_current_title();
+    id = parseInt(id.replace(/comic_/, '')) - 1;
+    if (id < 0) {
+      id = 0;
+    }
+    get_page("comic_" + id, 0);
   });
 
   // ページの取得
@@ -166,24 +191,12 @@ $(function(){
 
   // 画像縮小
   function image_size_reduction(id) {
-    var window_width = $(window).width();
-    var image_width = window_width / 2;
-
     var window_height = $(window).height();
     var image_height = window_height;
 
-    $("#half_page img").css({
-      "height": image_height + "px",
-    });
-    $("#half_page a").css({
-      "height": image_height + "px",
-    });
-
-    $(".pages img").css({
-      "max-width": image_width + "px",
+    $("#viewer img").css({
       "height": image_height + "px",
     });
   }
-
 });
 
