@@ -2,6 +2,7 @@ var cookie_key = 'is_half_page_mode';
 
 $(function(){
 
+  window_resize();
   change_half_mode();
 
   // 単ページ切り替え
@@ -9,15 +10,39 @@ $(function(){
     var value = is_half();
 
     if (value) {
-      var new_value = 'false';
+      set_half_page_mode(false);
     } else {
-      var new_value = 'true';
+      set_half_page_mode(true);
     }
-    $.cookie(cookie_key, new_value);
     change_half_mode();
-
     image_size_reduction();
   });
+
+  $(window).resize(function() {
+    window_resize();
+    change_half_mode();
+    image_size_reduction();
+  });
+
+  function window_resize() {
+    var window_width = $(window).width();
+    var window_height = $(window).height();
+
+    if (window_width < window_height) {
+      set_half_page_mode(true);
+    } else {
+      set_half_page_mode(false);
+    }
+  }
+
+  function set_half_page_mode(to_half) {
+    if (to_half === true) {
+      var new_value = 'true';
+    } else {
+      var new_value = 'false';
+    }
+    $.cookie(cookie_key, new_value);
+  }
 
   function is_half() {
     var mode = $.cookie(cookie_key);
@@ -145,7 +170,7 @@ $(function(){
     var image_width = window_width / 2;
 
     var window_height = $(window).height();
-    var image_height = window_height - 28;
+    var image_height = window_height;
 
     $("#half_page img").css({
       "height": image_height + "px",
