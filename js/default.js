@@ -2,6 +2,13 @@ var cookie_key = 'is_half_page_mode';
 
 $(function(){
 
+  var keyboard_shortcuts = {
+    "37" : "move_page('next', 2)",
+    "65" : "move_page('next', 2)",
+    "39" : "move_page('previous', 2)",
+    "68" : "move_page('previous', 2)",
+  }
+
   window_resize();
   change_half_mode();
 
@@ -27,6 +34,12 @@ $(function(){
     if (is_half() != is_half_mode) {
       image_size_reduction();
     }
+  });
+
+  // Keyboard shortcut.
+  $(window).keydown(function(e){
+    var _event = keyboard_shortcuts[e.keyCode];
+    if (_event != null) { eval(_event); }
   });
 
   function window_resize() {
@@ -92,40 +105,22 @@ $(function(){
 
     // 描画
     get_page(id, 0);
-    $("#viewer").animate({
-      height: "show"
-    }, "slow");
+    $("#viewer").animate({ height: "show" }, "slow");
   });
 
   // 次のページ表示
-  $("#page_2").click(function(){
-    move_page("next", 2);
-  });
-
-  // 1 ページだけ進む
-  $(".next").click(function(){
-    move_page("next", 1);
-  });
+  $("#page_2").click(function(){ move_page("next", 2); });
+  $(".next").click(function(){ move_page("next", 1); });
 
   // 前のページ表示
-  $("#page_1").click(function(){
-    move_page("previous", 2);
-  });
-
-  // 1 ページ戻る
-  $(".previous").click(function(){
-    move_page("previous", 1);
-  });
+  $("#page_1").click(function(){ move_page("previous", 2); });
+  $(".previous").click(function(){ move_page("previous", 1); });
 
   // 次のファイルへ
-  $(".next_file").click(function(){
-    move_file("next", 1);
-  });
+  $(".next_file").click(function(){ move_file("next", 1); });
 
   // 前のファイルへ
-  $(".previous_file").click(function(){
-    move_file("previous", 1);
-  });
+  $(".previous_file").click(function(){ move_file("previous", 1); });
 
   // ページ移動
   function move_page(toward, move) {
@@ -134,25 +129,28 @@ $(function(){
       var page = get_current_page() + move;
     } else if(toward === "previous") {
       var page = get_current_page() - move;
-      if (page < 0) {
-        page = 0;
-      }
     }
-    get_page(id, page);
+    if (page < 0) {
+      page = 0;
+      move_file("previous", 1);
+    } else {
+      get_page(id, page);
+    }
   }
 
   // ファイル移動
   function move_file(toward, move) {
     var id = get_current_title();
+    id = parseInt(id.replace(/comic_/, ''));
     if (toward === "next") {
-      id = parseInt(id.replace(/comic_/, '')) + move;
+      id += move;
     } else if (toward === "previous") {
-      id = parseInt(id.replace(/comic_/, '')) - move;
+      id -= move;
     } else {
-      if (get_current_page() < 1) {
-        id = parseInt(id.replace(/comic_/, '')) - move;
+      if (get_current_page() < 2) {
+        id -= move;
       } else {
-        id = parseInt(id.replace(/comic_/, '')) + move;
+        id += move;
       }
     }
     if (id < 0) {
