@@ -92,7 +92,6 @@ $(function(){
 
     // 描画
     get_page(id, 0);
-    $("#index").hide();
     $("#viewer").animate({
       height: "show"
     }, "slow");
@@ -100,73 +99,93 @@ $(function(){
 
   // 次のページ表示
   $("#page_2").click(function(){
-    var id = get_current_title();
-    var page = get_current_page() + 2;
-    get_page(id, page);
+    move_page("next", 2);
   });
 
   // 1 ページだけ進む
   $(".next").click(function(){
-    var id = get_current_title();
-    var page = get_current_page() + 1;
-    get_page(id, page);
+    move_page("next", 1);
   });
 
   // 前のページ表示
   $("#page_1").click(function(){
-    var id = get_current_title();
-    var page = get_current_page() - 2;
-    if (page < 0) {
-      page = 0;
-    }
-    get_page(id, page);
+    move_page("previous", 2);
   });
 
   // 1 ページ戻る
   $(".previous").click(function(){
-    var id = get_current_title();
-    var page = get_current_page() - 1;
-    if (page < 0) {
-      page = 0;
-    }
-    get_page(id, page);
+    move_page("previous", 1);
   });
 
   // 次のファイルへ
   $(".next_file").click(function(){
-    var id = get_current_title();
-    id = parseInt(id.replace(/comic_/, '')) + 1;
-    get_page("comic_" + id, 0);
+    move_file("next", 1);
   });
 
   // 前のファイルへ
   $(".previous_file").click(function(){
+    move_file("previous", 1);
+  });
+
+  // ページ移動
+  function move_page(toward, move) {
     var id = get_current_title();
-    id = parseInt(id.replace(/comic_/, '')) - 1;
+    if (toward === "next") {
+      var page = get_current_page() + move;
+    } else if(toward === "previous") {
+      var page = get_current_page() - move;
+      if (page < 0) {
+        page = 0;
+      }
+    }
+    get_page(id, page);
+  }
+
+  // ファイル移動
+  function move_file(toward, move) {
+    var id = get_current_title();
+    if (toward === "next") {
+      id = parseInt(id.replace(/comic_/, '')) + move;
+    } else if (toward === "previous") {
+      id = parseInt(id.replace(/comic_/, '')) - move;
+    } else {
+      if (get_current_page() < 1) {
+        id = parseInt(id.replace(/comic_/, '')) - move;
+      } else {
+        id = parseInt(id.replace(/comic_/, '')) + move;
+      }
+    }
     if (id < 0) {
       id = 0;
     }
     get_page("comic_" + id, 0);
-  });
+  }
 
   // ページの取得
   function get_page(id, page) {
-    var query = "view.php?id=" + id + "&page=" + page;
+    $.ajax({ url: "view.php", data: "id=" + id + "&page=" + page,
+      success: function(json) {
+        if (json.msg !== "ERROR") {
+          set_current_title(id, json.title);
+          set_current_page(page);
 
-    $.getJSON(query, function(result) {
-      set_current_title(id);
-      set_current_page(page);
-
-      paint("#half_page_image", result[0]);
-      paint("#page_1", result[0]);
-      paint("#page_2", result[1]);
-      image_size_reduction();
+          paint("#half_page_image", json.files[0]);
+          paint("#page_1", json.files[0]);
+          paint("#page_2", json.files[1]);
+          image_size_reduction();
+          $("#index").hide();
+        } else {
+          move_file("undefined", 1);
+        }
+      }, error: function(e) {
+      }
     });
   }
 
   // 現在表示している漫画の ID を保存
-  function set_current_title(title) {
-    $("#current_title").attr("value", title);
+  function set_current_title(id, title) {
+    $("title").text(title);
+    $("#current_title").attr("value", id);
   }
 
   // 現在表示している漫画の ID を取得

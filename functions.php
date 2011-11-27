@@ -1,10 +1,12 @@
 <?php
 
 function is_image($filename, $image_ext) {
-  $ext = substr(strrchr($filename, '.'), 1);
-
+  $ext = get_ext($filename);
   return in_array($ext, $image_ext);
+}
 
+function get_ext($filename) {
+  return substr(strrchr($filename, '.'), 1);
 }
 
 function cache_clean() {

@@ -1,4 +1,5 @@
 <?php
+
   header("Content-Type: application/json; charset=utf-8");
 
   // [ToDo]
@@ -27,8 +28,8 @@
     while (($entry = zip_read($comic)) !== false) { 
       $file_name = zip_entry_name($entry);
 
-      // 先読みすべきページ数を超えてる
-      if ($count >= $page + LOOKAHEAD) {
+      // もう走査しなくていい
+      if ($count > $page + LOOKAHEAD) {
         break;
       }
 
@@ -37,17 +38,27 @@
         continue;
       }
 
-      // ファイル名を格納
+      // 画像読み込むべきか
       if ($count == $page || $count == $page + 1) {
         $pages[$read_count++] = $file_name;
       }
 
       // 画像をキャッシュに格納すべきか
       if ($count >= $page && $count < $page + LOOKAHEAD) {
-        file_put_contents(
-          CACHE.'/'.$file_name,
-          zip_entry_read($entry, zip_entry_filesize($entry))
-        );
+        $dirname = dirname($file_name);
+
+        if ($dirname != '.' && !file_exists(CACHE.'/'.$dirname)) {
+          mkdir(CACHE.'/'.$dirname, 0777, true);
+        }
+
+        $data = zip_entry_read($entry, zip_entry_filesize($entry));
+        file_put_contents(CACHE.'/'.$file_name, $data);
+
+        /*
+        大きい画像にはあんまり有効じゃないのね、base64
+        $images[$read_count]["ext"] = get_ext($file_name);
+        $images[$read_count++]["data"] = base64_encode($data);
+        */
       }
 
       $count++;
@@ -60,9 +71,15 @@
 
   // 表示するページのパスを返却
   if ($read_count < 1) {
-    echo "NOPAGE";
+    echo '{"msg": "ERROR"}';
   } else {
-    echo '["'.CACHE.'/'.$pages[0].'", "'.CACHE.'/'.$pages[1].'"]';
+    $response = '{"title":"'.trim(basename($dir[$id])).'", "files":[';
+    $response .= '"'.CACHE.'/'.$pages[0].'", "'.CACHE.'/'.$pages[1].'"]}';
+    /*
+    $response .= '{"ext": "'.$images[0]["ext"].'", "data": "'.$images[0]["data"].'"}, ';
+    $response .= '{"ext": "'.$images[1]["ext"].'", "data": "'.$images[1]["data"].'"}]}';
+    */
+    echo $response;
   }
 ?>
 
