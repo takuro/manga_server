@@ -3,10 +3,10 @@ var cookie_key = 'is_half_page_mode';
 $(function(){
 
   var keyboard_shortcuts = {
-    "37" : "move_page('next', 2)",
-    "65" : "move_page('next', 2)",
-    "39" : "move_page('previous', 2)",
-    "68" : "move_page('previous', 2)",
+    "37" : "move_page('next', ",
+    "65" : "move_page('next', ",
+    "39" : "move_page('previous', ",
+    "68" : "move_page('previous', ",
   }
 
   window_resize();
@@ -39,7 +39,11 @@ $(function(){
   // Keyboard shortcut.
   $(window).keydown(function(e){
     var _event = keyboard_shortcuts[e.keyCode];
-    if (_event != null) { eval(_event); }
+    var page = 2;
+    if (is_half()) {
+      page = 1;
+    }
+    if (_event != null) { eval(_event + page + ')'); }
   });
 
   function window_resize() {
