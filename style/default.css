@@ -109,8 +109,9 @@ a:hover {
   display: none;
   position: absolute;
   background-color: #fff;
-  box-shadow: 1px 1px 4px #555 inset;
+  box-shadow: 0 1px 4px #555 inset;
   background:url(../images/bg.png) #fff;
+  width: 100%;
 }
 
 .controller {
