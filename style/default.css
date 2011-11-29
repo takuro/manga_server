@@ -29,7 +29,6 @@ a:hover {
 
 #viewer {
   z-index: 10;
-  display: none;
   background-color: #fff;
   box-shadow: 1px 1px 3px #555;
   text-align: center;
@@ -94,6 +93,8 @@ a:hover {
 
 #menu a {
   width: 15%;
+  text-shadow: 0px 1px 1px #fff;
+  font-size: 1.05em;
 }
 
 #paint_index {
@@ -108,5 +109,12 @@ a:hover {
   display: none;
   position: absolute;
   background-color: #fff;
-  box-shadow: 1px 1px 3px #555;
+  box-shadow: 1px 1px 4px #555 inset;
+  background:url(../images/bg.png) #fff;
 }
+
+.controller {
+  color: #555;
+  opacity: 0.20;
+}
+

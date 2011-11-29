@@ -96,9 +96,9 @@ $(function(){
   $("#paint_index").click(function(){
     var index = $("#index");
     if (index.css('display') == 'none') {
-      index.show();
+      index.animate({ height: "show" }, "fast");
     } else {
-      index.hide();
+      index.animate({ height: "hide" }, "fast");
     }
   });
 
@@ -108,8 +108,14 @@ $(function(){
     var id = _this.attr("id");
 
     // 描画
+    $("#index").animate({ height: "hide" }, "fast");
+    $(".controller").animate({ opacity: 1.0 }, 100);
+    if (is_half()) {
+      $("#half_page").animate({ height: "show" }, "slow");
+    } else {
+      $("#full_page").animate({ height: "show" }, "slow");
+    }
     get_page(id, 0);
-    $("#viewer").animate({ height: "show" }, "slow");
   });
 
   // 次のページ表示
@@ -175,7 +181,6 @@ $(function(){
           paint("#page_1", json.files[0]);
           paint("#page_2", json.files[1]);
           image_size_reduction();
-          $("#index").hide();
         } else {
           move_file("undefined", 1);
         }

@@ -27,6 +27,7 @@
     $file_name = "";
     while (($entry = zip_read($comic)) !== false) { 
       $file_name = zip_entry_name($entry);
+      $file_name = mb_convert_encoding($file_name, "UTF-8", $enc);
 
       // もう走査しなくていい
       if ($count > $page + LOOKAHEAD) {

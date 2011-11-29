@@ -1,5 +1,7 @@
 <?php
 
+$enc = "eucjp-win, sjis-win, ASCII, JIS, UTF-8, EUC-JP, SJIS";
+
 function is_image($filename, $image_ext) {
   $ext = get_ext($filename);
   return in_array($ext, $image_ext);

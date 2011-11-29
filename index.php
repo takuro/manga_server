@@ -23,6 +23,26 @@
     </section>
   </article>
 
+  <nav id="menu">
+    <a class="next">
+      <span class="controller">1 ページ進む</span>
+    </a>
+    <a class="next_file">
+      <span class="controller">次のファイル</span>
+    </a>
+    <a id="switch_half_page">
+      <span class="controller">単ページ切替</span>
+    </a>
+    <a id="paint_index">蔵書一覧</a>
+    <a class="previous">
+      <span class="controller">1 ページ戻る</span>
+    </a>
+    <a class="previous_file">
+      <span class="controller">前のファイル</span>
+    </a>
+    <div class="clear"></div>
+  </nav>
+
   <nav id="index">
     <?php
       $count = count($tree);
@@ -37,16 +57,6 @@
         $previous_root = $path;
       }
     ?>
-  </nav>
-
-  <nav id="menu">
-    <a class="next controller">1 ページ進む</a>
-    <a class="next_file controller">次のファイル</a>
-    <a id="switch_half_page" class="controller">単ページ切替</a>
-    <a id="paint_index">蔵書一覧</a>
-    <a class="previous controller">1 ページ戻る</a>
-    <a class="previous_file controller">前のファイル</a>
-    <div class="clear"></div>
   </nav>
 
   <input type="hidden" id="current_title" name="current_title" value="" />
