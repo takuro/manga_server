@@ -4,6 +4,7 @@
 
   // [ToDo]
   // * バリデート（個人利用想定なので優先度低）
+  // * 同じ ZIP ファイル名、同じ画像のファイル名の場合、ブラウザのキャッシュのせいで画像の表示が乱れる
 
   require_once 'settings.php';
   require_once 'functions.php';
@@ -22,6 +23,7 @@
   $count = 0;
   $read_count = 0;
   $zip_file = trim(COMIC_DIR."/".$dir[$id]);
+  $zip_filename = get_filename_without_ext($zip_file);
   $comic = zip_open($zip_file);
   if (is_resource($comic)) { 
     $file_name = "";
@@ -53,7 +55,7 @@
         }
 
         $data = zip_entry_read($entry, zip_entry_filesize($entry));
-        file_put_contents(CACHE.'/'.$file_name, $data);
+        file_put_contents(CACHE.'/'.$zip_filename.'_'.$file_name, $data);
 
         /*
         大きい画像にはあんまり有効じゃないのね、base64
@@ -74,8 +76,8 @@
   if ($read_count < 1) {
     echo '{"msg": "ERROR"}';
   } else {
-    $response = '{"title":"'.trim(basename($dir[$id])).'", "files":[';
-    $response .= '"'.CACHE.'/'.$pages[0].'", "'.CACHE.'/'.$pages[1].'"]}';
+    $response = '{"title":"'.$zip_filename.'", "files":[';
+    $response .= '"'.CACHE.'/'.$zip_filename.'_'.$pages[0].'", "'.CACHE.'/'.$zip_filename.'_'.$pages[1].'"]}';
     /*
     $response .= '{"ext": "'.$images[0]["ext"].'", "data": "'.$images[0]["data"].'"}, ';
     $response .= '{"ext": "'.$images[1]["ext"].'", "data": "'.$images[1]["data"].'"}]}';

@@ -3,12 +3,20 @@
 $enc = "eucjp-win, sjis-win, ASCII, JIS, UTF-8, EUC-JP, SJIS";
 
 function is_image($filename, $image_ext) {
+  $filename = trim($filename);
   $ext = get_ext($filename);
   return in_array($ext, $image_ext);
 }
 
 function get_ext($filename) {
+  $filename = trim($filename);
   return substr(strrchr($filename, '.'), 1);
+}
+
+function get_filename_without_ext($filename) {
+  $filename = trim($filename);
+  $path = pathinfo($filename);
+  return $path["filename"];
 }
 
 function cache_clean() {
