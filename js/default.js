@@ -112,35 +112,13 @@ $(function(){
   $(".previous").click(function(){ move_page("previous", 1); });
 
   $("#page_1").click(function(){
-    if (is_("right_paginate")) {
-      if (is_("right_click")) {
-        move_page("previous", 2);
-      } else {
-        move_page("next", 2);
-      }
-    } else {
-      if (is_("right_click")) {
-        move_page("next", 2);
-      } else {
-        move_page("previous", 2);
-      }
-    }
+    move_page_1();
   });
+
   $("#page_2").click(function(){
-    if (is_("right_paginate")) {
-      if (is_("right_click")) {
-        move_page("next", 2);
-      } else {
-        move_page("previous", 2);
-      }
-    } else {
-      if (is_("right_click")) {
-        move_page("previous", 2);
-      } else {
-        move_page("next", 2);
-      }
-    }
+    move_page_2();
   });
+
 
   // 次のファイルへ
   $(".next_file").click(function(){ move_file("next", 1); });
@@ -324,6 +302,46 @@ $(function(){
   function set_right_paginate(to_right) {
     if (to_right === true) { var new_value = 'true'; } else { var new_value = 'false'; }
     $.cookie(cookie_keys["right_paginate"], new_value);
+  }
+
+  function key_down(key) {
+    if (key === "a" || key === "left") {
+      move_page_2();
+    } else if (key === "d" || key === "right") {
+      move_page_1();
+    }
+  }
+
+  function move_page_1() {
+    if (is_("right_paginate")) {
+      if (is_("right_click")) {
+        move_page("previous", 2);
+      } else {
+        move_page("next", 2);
+      }
+    } else {
+      if (is_("right_click")) {
+        move_page("next", 2);
+      } else {
+        move_page("previous", 2);
+      }
+    }
+  }
+
+  function move_page_2() {
+    if (is_("right_paginate")) {
+      if (is_("right_click")) {
+        move_page("next", 2);
+      } else {
+        move_page("previous", 2);
+      }
+    } else {
+      if (is_("right_click")) {
+        move_page("previous", 2);
+      } else {
+        move_page("next", 2);
+      }
+    }
   }
 
 });
