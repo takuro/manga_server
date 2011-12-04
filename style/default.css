@@ -116,7 +116,7 @@ a:hover {
   display: none;
   box-shadow: 0 1px 4px #555 inset;
   background:url(../images/bg.png) #fff;
-  width: 98%;
+  width: 100%;
 }
 
 .controller {
