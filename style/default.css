@@ -142,3 +142,14 @@ input[type="checkbox"] {
 #settings li {
   margin-bottom: 10px;
 }
+
+#index img {
+  display: block;
+  background: rgba(200, 200, 200, 0.5);
+  padding: 2px;
+  margin: 3px 0;
+}
+
+#index img:hover {
+  background: rgba(200, 200, 200, 1);
+}

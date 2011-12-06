@@ -56,11 +56,13 @@
       $count = count($tree);
       $previous_root = array();
       for ($i = 0; $i < $count; $i++) {
+        /*
         $path = explode("/", $tree[$i]);
 
         if (count($previous_root) > 1 && $path[0] !== $previous_root[0]) {
           echo "<br />";
         }
+         */
         echo '<a id="comic_'.$i.'" class="comic_title">'.$tree[$i].'</a>';
         $previous_root = $path;
       }
@@ -72,7 +74,7 @@
       <li id="right_click_to_next_wrapper">
         <?php
           $checked = $_COOKIE["right_click_to_next"];
-          if ($checked == "true") { ?>
+          if (!empty($checked) && $checked == "true") { ?>
             <input type="checkbox" name="right_click_to_next" id="right_click_to_next" value="1" checked="checked" />
         <?php
           } else { ?>
@@ -89,7 +91,7 @@
       <li id="right_paginate_wrapper">
         <?php
           $checked = $_COOKIE["right_paginate"];
-          if ($checked == "true") { ?>
+          if (!empty($checked) && $checked == "true") { ?>
             <input type="checkbox" name="right_paginate" id="right_paginate" value="1" checked="checked" />
         <?php
           } else { ?>
@@ -101,6 +103,13 @@
         </label><br />
         <span class="notice">
           標準設定：右のページから読む
+        </span>
+      </li>
+      <li>
+        <a href="make_thumbnail.php">漫画の表紙を生成する</a>
+        <br />
+        <span class="notice">
+          まだきちんと動かないかもしれません。漫画ファイルが多いと時間がかかります。
         </span>
       </li>
     </ul>

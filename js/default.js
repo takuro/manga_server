@@ -16,6 +16,7 @@ $(function(){
   change_half_mode();
   change_move_mode();
   change_paginate();
+  get_covers();
 
   /*
    * events
@@ -343,6 +344,23 @@ $(function(){
       }
     }
   }
+
+  // 表紙を表示
+  function get_covers() {
+    $.ajax({ 
+      url: "thumbnails.php", 
+      success: function(json) {
+        console.log(json[0]);
+        $.each(json, function() {
+          var _this = this;
+          $("#comic_" + _this.id).html('<img src="' + _this.data + '" />');
+        });
+      }, error: function(e) {
+        console.error(e);
+      }
+    });
+  }
+
 
 });
 

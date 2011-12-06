@@ -39,4 +39,21 @@
   // 公開ディレクトリでないほうが望ましいです。
   define("DIRTREE", CACHE."/dir_tree");
 
+  // 何番目の画像を表紙にするか
+  // デフォルトは 1 枚目
+  define("FORCOVER", 2);
+
+  // サムネイルの最大幅
+  define("MAXWIDTHTHUMB", 90);
+
+  // サムネイルの最大高
+  define("MAXHEIGHTTHUMB", 90);
+
+  // サムネイルの品質
+  // 70 〜 90 くらいで、最大 100
+  define("THUMBQUALITY", 70);
+
+  // サムネイルを保存するファイル
+  // サムネイルは base64 で文字列になってる
+  define("THUMBSFILE", CACHE."/thumbs.json");
 ?>

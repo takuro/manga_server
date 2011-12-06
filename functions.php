@@ -19,6 +19,24 @@ function get_filename_without_ext($filename) {
   return $path["filename"];
 }
 
+function is_jpg($ext) {
+  if (strcasecmp($ext, "jpg") === 0) {
+    return true;
+  } else if (strcasecmp($ext, "jpeg") === 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function is_png($ext) {
+  if (strcasecmp($ext, "png") === 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function cache_clean() {
   if (dir_size(CACHE) > CACHELIMIT) {
     exec('rm -f '.CACHE.'/*');
@@ -46,12 +64,12 @@ function dir_size($dir) {
 
 function get_dir_tree() {
   if (!$handle = fopen(DIRTREE, "rb")) {
-    die("[ERR]FILE OPEN");
+    die("[ERR]FILE OPEN : get_dir_tree");
   }
 
   $tree = array();
   while (($buffer = fgets($handle, 4096)) !== false) {
-    $tree[] = $buffer;
+    $tree[] = trim($buffer);
   }
   if (!feof($handle)) {
     echo "Error: unexpected fgets() fail\n";
@@ -72,16 +90,84 @@ function dir_tree() {
 
 function dir_tree_callback($path) {
   if (!$handle = fopen(DIRTREE, "ab")) {
-    die("[ERR]FILE OPEN");
+    die("[ERR]FILE OPEN : dir_tree_callback");
   }
 
   $length = mb_strlen(COMIC_DIR."/");
   $path = mb_substr($path, $length);
   if (fwrite($handle, $path."\r\n") === false) {
-    die("[ERR]FILE WRITE");
+    die("[ERR]FILE WRITE : dir_tree_callback");
   }
 
   fclose($handle);
+}
+
+function save_thumbnail($thumb) {
+  $imgbinary =
+    fread(fopen($thumb["filepath"], "r"), filesize($thumb["filepath"]));
+  $img_str = base64_encode($imgbinary);
+  $img_str = 'data:image/'.$thumb["ext"].';base64,'.$img_str;
+
+  if (!$handle = fopen(THUMBSFILE, "ab")) {
+    die("[ERR]FILE OPEN : save_thumbnail");
+  }
+
+  $text = '{"id":"'.$thumb["zip_count"].'", "data":"'.$img_str.'"}';
+  if (fwrite($handle, $text."\r\n") === false) {
+    die("[ERR]FILE WRITE : dir_tree_callback");
+  }
+
+  fclose($handle);
+}
+
+function make_thumbnail($file) {
+  $image = null;
+  if (is_jpg($file["ext"])) {
+    $image = imagecreatefromjpeg($file["filepath"]);
+  } else if (is_png($file["ext"])) {
+    $image = imagecreatefrompng($file["filepath"]);
+  }
+
+  if (is_null($image)) {
+    return false;
+  }
+
+  $org = array(
+    "w" => imagesx($image),
+    "h" => imagesy($image)
+  );
+
+  $new = null;
+  if ($org["w"] < $org["h"] || $org["w"] == $org["h"]) {
+    $w = MAXWIDTHTHUMB;
+    $rate = $w / $org["w"];
+    $new = array(
+      "w" => $w,
+      "h" => $org["h"] * $rate
+    );
+  } else {
+    $h = MAXHEIGHTTHUMB;
+    $rate = $h / $org["h"];
+    $new = array(
+      "w" => $org["w"] * $rate,
+      "h" => $h 
+    );
+  }
+
+  $new_image = imagecreatetruecolor($new["w"], $new["h"]);
+  $r = imagecopyresampled(
+    $new_image, $image, 0, 0, 0, 0,
+    $new["w"],$new["h"],$org["w"],$org["h"]);
+
+  imagedestroy($image);
+  if ($r === false) {
+    imagedestroy($new_image);
+    return false;
+  }
+
+  $r = imagejpeg($new_image, $file["filepath"], THUMBQUALITY);
+  imagedestroy($new_image);
+  return $r;
 }
 
 // テスト用

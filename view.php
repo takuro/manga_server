@@ -22,7 +22,7 @@
   // ZIP ファイル読み込み
   $count = 0;
   $read_count = 0;
-  $zip_file = trim(COMIC_DIR."/".$dir[$id]);
+  $zip_file = COMIC_DIR."/".$dir[$id];
   $zip_filename = get_filename_without_ext($zip_file);
   $comic = zip_open($zip_file);
   if (is_resource($comic)) { 
