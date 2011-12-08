@@ -2,6 +2,14 @@
 
 $enc = "eucjp-win, sjis-win, ASCII, JIS, UTF-8, EUC-JP, SJIS";
 
+function is_iphone() {
+  return (bool) strpos($_SERVER['HTTP_USER_AGENT'],'iPhone');
+}
+
+function is_ipad() {
+  return (bool) strpos($_SERVER['HTTP_USER_AGENT'],'iPad');
+}
+
 function is_image($filename, $image_ext) {
   $filename = trim($filename);
   $ext = get_ext($filename);

@@ -7,7 +7,8 @@
 
   // 漫画のファイルが格納されているディレクトリ
   // 公開されている必要はありません
-  define("COMIC_DIR", "../comics");
+  //define("COMIC_DIR", "../comics");
+  define("COMIC_DIR", "../comics.bak");
 
   /*----------- 以下の設定はあまりいじらないで ----------*/
 

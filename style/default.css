@@ -53,8 +53,12 @@ a:hover {
   width: 100%;
 }
 
-#full_page div {
+#page_1,
+#page_2 {
   width: 50%;
+}
+
+img {
   cursor: pointer;
 }
 
@@ -110,13 +114,16 @@ a:hover {
   margin: 0 auto;
 }
 
-#index, #settings {
+#index,
+#settings {
   margin: 0 auto;
   padding: 1%;
-  display: none;
   box-shadow: 0 1px 4px #555 inset;
   background:url(../images/bg.png) #fff;
   width: 98%;
+}
+#settings {
+  display: none;
 }
 
 .controller {
@@ -152,4 +159,8 @@ input[type="checkbox"] {
 
 #index img:hover {
   background: rgba(200, 200, 200, 1);
+}
+
+.selected {
+  background: rgba(200, 200, 200, 0.5);
 }

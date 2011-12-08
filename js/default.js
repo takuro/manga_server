@@ -57,6 +57,7 @@ $(function(){
     var is_half_mode = is_("half");
     window_resize();
     change_half_mode();
+    image_size_reduction();
 
     if (is_("half") != is_half_mode) {
       image_size_reduction();
@@ -98,7 +99,7 @@ $(function(){
 
     // 描画
     $("#index, #settings").animate({ height: "hide" }, "fast");
-    $(".controller").animate({ opacity: 1.0 }, 100);
+    $("#menu a").removeClass("controller");
     if (is_("half")) {
       $("#half_page").animate({ height: "show" }, "slow");
     } else {
@@ -265,12 +266,51 @@ $(function(){
 
   // 画像縮小
   function image_size_reduction(id) {
-    var window_height = $(window).height();
-    var image_height = window_height;
+    var _img = $("#viewer img");
+    var _window = $(window);
 
-    $("#viewer img").css({
-      "height": image_height + "px",
+    var window_height = _window.height();
+    var window_width  = _window.width();
+
+    var img_width  = _img.width();
+    var img_height = _img.height();
+    var rate = 1.4;
+
+    if (img_height < 1 || img_width < 1) {
+    } else if (img_height < img_width) {
+      rate = img_width / img_height;
+    } else {
+      rate = img_height / img_width;
+    }
+    if (rate < 1) { rate = 1.4; }
+
+    img_width = window_height / rate;
+    var new_img_width = window_width / 2;
+
+    if (new_img_width < img_width && !is_("half")) {
+      _img.css({
+        "height": "",
+        "max-width": new_img_width + "px",
+        "max-height": "",
+      });
+    } else if (is_("half")) {
+      _img.css({
+        "max-width": window_width + "px",
+        "max-height": window_height + "px",
+      });
+    } else {
+      _img.css({
+        "height": window_height + "px",
+        "max-width": "",
+      });
+    }
+
+    /*
+    _img.css({
+      "max-height": img_height + "px",
+      "max-width" : img_width + "px"
     });
+    */
   }
 
   // ページ移動変更

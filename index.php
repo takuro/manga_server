@@ -26,45 +26,20 @@
   </article>
 
   <nav id="menu">
-    <span class="controller">
-      <a class="next next_control left_control">1 ページ進む</a>
-    </span>
-
-    <span class="controller">
-      <a class="next_file next_control left_control">次のファイル</a>
-    </span>
-
-    <span class="controller">
-      <a id="switch_half_page">単ページ切替</a>
-    </span>
+    <a class="controller next next_control left_control">1 ページ進む</a>
+    <a class="controller next_file next_control left_control">次のファイル</a>
+    <a id="switch_half_page" class="controller ">単ページ切替</a>
     <a id="paint_index">蔵書一覧</a>
     <a id="paint_settings">設定</a>
-
-    <span class="controller">
-      <a class="previous previous_control right_control">1 ページ戻る</a>
-    </span>
-
-    <span class="controller">
-      <a class="previous_file previous_control right_control">前のファイル</a>
-    </span>
-
-    <div class="clear"></div>
+    <a class="controller previous previous_control right_control">1 ページ戻る</a>
+    <a class="controller previous_file previous_control right_control">前のファイル</a>
   </nav>
 
   <nav id="index">
     <?php
       $count = count($tree);
-      $previous_root = array();
       for ($i = 0; $i < $count; $i++) {
-        /*
-        $path = explode("/", $tree[$i]);
-
-        if (count($previous_root) > 1 && $path[0] !== $previous_root[0]) {
-          echo "<br />";
-        }
-         */
         echo '<a id="comic_'.$i.'" class="comic_title">'.$tree[$i].'</a>';
-        $previous_root = $path;
       }
     ?>
   </nav>
@@ -119,6 +94,5 @@
   <input type="hidden" id="current_page" name="current_page" value="" />
 
 <?php
-  
   end_html();
 ?>
