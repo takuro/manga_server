@@ -112,12 +112,12 @@
         背景：
         <?php
           if (empty($_COOKIE["background_color"])) {
-            $bg_color = "true";
+            $bg_color = "false";
           } else {
             $bg_color = $_COOKIE["background_color"];
           }
 
-          if ($bg_color == "true") {
+          if ($bg_color == "false") {
         ?>
           <input type="radio" name="background_color" id="background_white" value="1" checked="checked" />
           <label for="background_white"> 明るい </label>

@@ -33,8 +33,8 @@ $(function(){
   });
 
   // ページ移動切り替え
-  $("#right_click_to_next_wrapper").click(function(){
-    var checked = $('#right_click_to_next').attr('checked');
+  $("#right_click_to_next").click(function(){
+    var checked = $(this).attr('checked');
     if (checked === "checked") {
       set_move_mode(true);
     } else {
@@ -44,8 +44,8 @@ $(function(){
   });
 
   // ページ送り切り替え
-  $("#right_paginate_wrapper").click(function(){
-    var checked = $('#right_paginate').attr('checked');
+  $("#right_paginate").click(function(){
+    var checked = $(this).attr('checked');
     if (checked === "checked") {
       set_right_paginate(true);
     } else {
@@ -55,7 +55,7 @@ $(function(){
   });
 
   // 背景を切り替え
-  $("#background_color").click(function(){
+  $("input[name='background_color']").click(function(){
     var checked = $("#background_white").attr("checked");
     if (checked === "checked") {
       set_background_color("white");
@@ -364,14 +364,14 @@ $(function(){
   function change_background_color() {
     // cookie 名と値の組み合わせが変だけど
     if (is_("background_color")) {
-      $("#viewer").css({"background-color":"#fff"});
-    } else {
       $("#viewer").css({"background-color":"#333"});
+    } else {
+      $("#viewer").css({"background-color":"#fff"});
     }
   }
 
   function set_background_color(color) {
-    if (color === "white") { var new_value = 'true'; } else { var new_value = 'false'; }
+    if (color === "white") { var new_value = 'false'; } else { var new_value = 'true'; }
     $.cookie(cookie_keys["background_color"], new_value);
   }
 
