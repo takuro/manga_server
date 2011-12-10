@@ -1,7 +1,8 @@
 var cookie_keys = {
   "half" : "is_half_page_mode",
   "right_click" : "right_click_to_next",
-  "right_paginate" : "right_paginate"
+  "right_paginate" : "right_paginate",
+  "background_color" : "background_color"
 }
 
 var keyboard_shortcuts = {
@@ -16,6 +17,7 @@ $(function(){
   change_half_mode();
   change_move_mode();
   change_paginate();
+  change_background_color();
   get_covers();
 
   /*
@@ -52,6 +54,18 @@ $(function(){
     change_paginate();
   });
 
+  // 背景を切り替え
+  $("#background_color").click(function(){
+    var checked = $("#background_white").attr("checked");
+    if (checked === "checked") {
+      set_background_color("white");
+    } else {
+      set_background_color("black");
+    }
+
+    change_background_color();
+  });
+
   // ウィンドウのリサイズを取得
   $(window).resize(function() {
     var is_half_mode = is_("half");
@@ -73,6 +87,7 @@ $(function(){
   // 蔵書一覧、設定 ON / OFF
   $("#paint_index, #paint_settings").click(function(){
     var _id = $(this).attr("id");
+    var target_offset = $('#' + _id).offset().top;
     var paint = null;
     var hide = null;
 
@@ -83,13 +98,18 @@ $(function(){
       paint = $("#index");
       hide = $("#settings");
     }
+    $(".selected").removeClass("selected");
 
     hide.hide();
     if (paint.css('display') == 'none') {
       paint.animate({ height: "show" }, "fast");
+      $(this).addClass("selected");
     } else {
       paint.animate({ height: "hide" }, "fast");
+      $(this).removeClass("selected");
     }
+
+    $('body').animate({scrollTop: target_offset}, 300);
   });
 
   // 蔵書一覧からクリック
@@ -100,6 +120,8 @@ $(function(){
     // 描画
     $("#index, #settings").animate({ height: "hide" }, "fast");
     $("#menu a").removeClass("controller");
+    $(".selected").removeClass("selected");
+
     if (is_("half")) {
       $("#half_page").animate({ height: "show" }, "slow");
     } else {
@@ -153,14 +175,7 @@ $(function(){
   }
 
   function is_(item) {
-    var mode = "";
-    if (item === "half") {
-      mode = $.cookie(cookie_keys["half"]);
-    } else if (item === "right_click") {
-      mode = $.cookie(cookie_keys["right_click"]);
-    } else if (item === "right_paginate") {
-      mode = $.cookie(cookie_keys["right_paginate"]);
-    }
+    var mode = $.cookie(cookie_keys[item]);
 
     if (mode === null) {
       return false;
@@ -345,6 +360,22 @@ $(function(){
     $.cookie(cookie_keys["right_paginate"], new_value);
   }
 
+  // 背景チェンジ
+  function change_background_color() {
+    // cookie 名と値の組み合わせが変だけど
+    if (is_("background_color")) {
+      $("#viewer").css({"background-color":"#fff"});
+    } else {
+      $("#viewer").css({"background-color":"#333"});
+    }
+  }
+
+  function set_background_color(color) {
+    if (color === "white") { var new_value = 'true'; } else { var new_value = 'false'; }
+    $.cookie(cookie_keys["background_color"], new_value);
+  }
+
+  // キーボードショートカット
   function key_down(key) {
     if (key === "a" || key === "left") {
       move_page_2();
@@ -400,7 +431,6 @@ $(function(){
       }
     });
   }
-
 
 });
 

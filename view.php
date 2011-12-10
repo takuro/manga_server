@@ -56,12 +56,6 @@
 
         $data = zip_entry_read($entry, zip_entry_filesize($entry));
         file_put_contents(CACHE.'/'.$zip_filename.'_'.$file_name, $data);
-
-        /*
-        大きい画像にはあんまり有効じゃないのね、base64
-        $images[$read_count]["ext"] = get_ext($file_name);
-        $images[$read_count++]["data"] = base64_encode($data);
-        */
       }
 
       $count++;
@@ -77,11 +71,18 @@
     echo '{"msg": "ERROR"}';
   } else {
     $response = '{"title":"'.$zip_filename.'", "files":[';
-    $response .= '"'.CACHE.'/'.$zip_filename.'_'.$pages[0].'", "'.CACHE.'/'.$zip_filename.'_'.$pages[1].'"]}';
-    /*
-    $response .= '{"ext": "'.$images[0]["ext"].'", "data": "'.$images[0]["data"].'"}, ';
-    $response .= '{"ext": "'.$images[1]["ext"].'", "data": "'.$images[1]["data"].'"}]}';
-    */
+
+    $send_imgs = 2;
+    for ($i = 0; $i < $send_imgs; $i++) {
+      $path = rawurlencode(CACHE.'/'.$zip_filename.'_'.$pages[$i]);
+      $response .= '"'.$path.'"';
+      if ($i + 1 < $send_imgs) {
+        $response .= ',';
+      } else {
+        $response .= ']}';
+      }
+    }
+
     echo $response;
   }
 ?>

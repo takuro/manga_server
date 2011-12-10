@@ -111,10 +111,16 @@ function dir_tree_callback($path) {
 }
 
 function save_thumbnail($thumb) {
-  $imgbinary =
-    fread(fopen($thumb["filepath"], "r"), filesize($thumb["filepath"]));
+  $imgbinary = fread(fopen($thumb["filepath"], "r"), filesize($thumb["filepath"]));
   $img_str = base64_encode($imgbinary);
-  $img_str = 'data:image/'.$thumb["ext"].';base64,'.$img_str;
+  $ext = $thumb["ext"];
+
+  if (strcasecmp($ext, "jpg") === 0) {
+    $ext = "jpeg";
+  }
+
+  $img_str = 'data:image/'.$ext.';base64,'.$img_str;
+  //echo '<img src="'.$img_str.'" />';
 
   if (!$handle = fopen(THUMBSFILE, "ab")) {
     die("[ERR]FILE OPEN : save_thumbnail");

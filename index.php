@@ -26,20 +26,37 @@
   </article>
 
   <nav id="menu">
+<?php
+  if (is_iphone()) {
+?>
+    <a class="controller next next_control left_control">1 ページ進む</a>
+    <a class="controller previous previous_control right_control">1 ページ戻る</a>
+    <div class="clear"></div>
+    <a class="controller next_file next_control left_control">次のファイル</a>
+    <a class="controller previous_file previous_control right_control">前のファイル</a>
+    <div class="clear"></div>
+    <a id="paint_index" class="selected">蔵書一覧</a>
+    <a id="paint_settings">設定</a>
+<?php
+  } else {
+?>
     <a class="controller next next_control left_control">1 ページ進む</a>
     <a class="controller next_file next_control left_control">次のファイル</a>
     <a id="switch_half_page" class="controller ">単ページ切替</a>
-    <a id="paint_index">蔵書一覧</a>
+    <a id="paint_index" class="selected">蔵書一覧</a>
     <a id="paint_settings">設定</a>
     <a class="controller previous previous_control right_control">1 ページ戻る</a>
     <a class="controller previous_file previous_control right_control">前のファイル</a>
+<?php
+  }
+?>
   </nav>
 
   <nav id="index">
     <?php
       $count = count($tree);
       for ($i = 0; $i < $count; $i++) {
-        echo '<a id="comic_'.$i.'" class="comic_title">'.$tree[$i].'</a>';
+        echo '<a id="comic_'.$i.'" class="comic_title" tabindex="'.($i+1).'" title="'.$tree[$i].'">'.$tree[$i].'</a>';
       }
     ?>
   </nav>
@@ -48,8 +65,13 @@
     <ul>
       <li id="right_click_to_next_wrapper">
         <?php
-          $checked = $_COOKIE["right_click_to_next"];
-          if (!empty($checked) && $checked == "true") { ?>
+          if (empty($_COOKIE["right_click_to_next"])) {
+            $checked = "false";
+          } else {
+            $checked = $_COOKIE["right_click_to_next"];
+          }
+
+          if ($checked == "true") { ?>
             <input type="checkbox" name="right_click_to_next" id="right_click_to_next" value="1" checked="checked" />
         <?php
           } else { ?>
@@ -65,8 +87,13 @@
       </li>
       <li id="right_paginate_wrapper">
         <?php
-          $checked = $_COOKIE["right_paginate"];
-          if (!empty($checked) && $checked == "true") { ?>
+          if (empty($_COOKIE["right_paginate"])) {
+            $checked = "false";
+          } else {
+            $checked = $_COOKIE["right_paginate"];
+          }
+
+          if ($checked == "true") { ?>
             <input type="checkbox" name="right_paginate" id="right_paginate" value="1" checked="checked" />
         <?php
           } else { ?>
@@ -80,6 +107,34 @@
           標準設定：右のページから読む
         </span>
       </li>
+
+      <li id="background_color">
+        背景：
+        <?php
+          if (empty($_COOKIE["background_color"])) {
+            $bg_color = "true";
+          } else {
+            $bg_color = $_COOKIE["background_color"];
+          }
+
+          if ($bg_color == "true") {
+        ?>
+          <input type="radio" name="background_color" id="background_white" value="1" checked="checked" />
+          <label for="background_white"> 明るい </label>
+          <input type="radio" name="background_color" id="background_black" value="1" />
+          <label for="background_black"> 暗い </label>
+        <?php
+          } else {
+        ?>
+          <input type="radio" name="background_color" id="background_white" value="1" />
+          <label for="background_white"> 明るい </label>
+          <input type="radio" name="background_color" id="background_black" value="1" checked="checked" />
+          <label for="background_black"> 暗い </label>
+        <?php
+          }
+        ?>
+      </li>
+
       <li>
         <a href="make_thumbnail.php">漫画の表紙を生成する</a>
         <br />

@@ -8,7 +8,7 @@
     die("[ERR]FILE OPEN : THUMBSFILE");
   }
 
-  $data = null;
+  $data = array();
   while (($buffer = fgets($handle, 512000)) !== false) {
     $data[] = $buffer;
   }
@@ -16,5 +16,6 @@
     echo "Error: unexpected fgets() fail\n";
   }
   fclose($handle);
+
   echo '['.implode(',', $data).']';
 ?>

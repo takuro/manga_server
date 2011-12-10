@@ -5,6 +5,12 @@
 
   $dir = get_dir_tree();
   $files = count($dir);
+
+  if (file_exists(THUMBSFILE)) {
+    unlink(THUMBSFILE);
+  }
+  touch(THUMBSFILE);
+
   for ($i = 0; $i < $files; $i++) {
     $count = 1;
     $zip_file = COMIC_DIR."/".$dir[$i];
@@ -50,6 +56,6 @@
     zip_close($comic);
   }
 
-  header('Location: /');
+  header('Location: index.php');
 
 ?>

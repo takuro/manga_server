@@ -8,7 +8,7 @@
   // 漫画のファイルが格納されているディレクトリ
   // 公開されている必要はありません
   //define("COMIC_DIR", "../comics");
-  define("COMIC_DIR", "../comics.bak");
+  define("COMIC_DIR", "../comics");
 
   /*----------- 以下の設定はあまりいじらないで ----------*/
 
@@ -42,7 +42,7 @@
 
   // 何番目の画像を表紙にするか
   // デフォルトは 1 枚目
-  define("FORCOVER", 2);
+  define("FORCOVER", 1);
 
   // サムネイルの最大幅
   define("MAXWIDTHTHUMB", 90);
@@ -52,7 +52,7 @@
 
   // サムネイルの品質
   // 70 〜 90 くらいで、最大 100
-  define("THUMBQUALITY", 70);
+  define("THUMBQUALITY", 90);
 
   // サムネイルを保存するファイル
   // サムネイルは base64 で文字列になってる
