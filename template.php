@@ -10,7 +10,7 @@ function start_html() {
           <meta charset="utf-8" />';
 
   if (is_ipad() || is_iphone()) {
-    echo '<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no" />';
+    echo '<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=3.0; user-scalable=yes" />';
     echo '<meta name="apple-mobile-web-app-capable" content="yes" />';
     echo '<meta name="apple-mobile-web-app-status-bar-style" content="black" />';
   }
