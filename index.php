@@ -37,6 +37,7 @@
     <div class="clear"></div>
     <a id="paint_index" class="selected">蔵書一覧</a>
     <a id="paint_settings">設定</a>
+    <a id="paint_help">使い方</a>
 <?php
   } else {
 ?>
@@ -45,6 +46,7 @@
     <a id="switch_half_page" class="controller ">単ページ切替</a>
     <a id="paint_index" class="selected">蔵書一覧</a>
     <a id="paint_settings">設定</a>
+    <a id="paint_help">使い方</a>
     <a class="controller previous previous_control right_control">1 ページ戻る</a>
     <a class="controller previous_file previous_control right_control">前のファイル</a>
 <?php
@@ -142,6 +144,47 @@
           まだきちんと動かないかもしれません。漫画ファイルが多いと時間がかかります。
         </span>
       </li>
+    </ul>
+  </section>
+
+  <section id="help">
+    <h1>iPhone、iPad などの iOS 製品をお使いの方へ</h1>
+    <ul>
+      <li>Web クリップ機能で、「ホーム画面に追加」するとフルスクリーンで漫画を楽しめます。</li>
+    </ul>
+    <h1>本を開く</h1>
+    <ol>
+      <li>「蔵書一覧」をクリック。</li>
+      <li>本のタイトルか表紙をクリック（「設定」から表紙の生成が可能）。</li>
+    </ol>
+    <h1>次のページに移動</h1>
+    <ul>
+      <li>左側のページをクリック。</li>
+      <li>1 ページ表示の場合、画面の左側をクリック。</li>
+      <li>キーボードの「左矢印」キーを押す。</li>
+      <li>キーボードの「 a 」キーを押す。</li>
+      <li class="notice">
+        「設定」で「画面の右側をクリックして次のページに移動する」がオンの場合、「前のページに移動」の操作と逆転します。
+      </li>
+    </ul>
+    <h1>前のページに移動</h1>
+    <ul>
+      <li>右側のページをクリック。</li>
+      <li>1 ページ表示の場合、画面の右側をクリック。</li>
+      <li>キーボードの「右矢印」キーを押す。</li>
+      <li>キーボードの「 d 」キーを押す。</li>
+      <li class="notice">
+        「設定」で「画面の右側をクリックして次のページに移動する」がオフの場合、「次のページに移動」の操作と逆転します。
+      </li>
+    </ul>
+    <h1>1 ページ／2 ページ表示を切り替える</h1>
+    <ol>
+      <li>「単ページ切替」をクリックするたびに切り替わります。</li>
+    </ol>
+    <h1>2 ページ表示のとき、1 ページだけ移動する</h1>
+    <ul>
+      <li>次のページに移動するときは「 1 ページ進む」をクリック。</li>
+      <li>前のページに移動するときは「 1 ページ戻る」をクリック。</li>
     </ul>
   </section>
 

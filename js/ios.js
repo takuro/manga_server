@@ -1,4 +1,9 @@
 $(function(){
-  var w = $(window).width();
-  var h = $(window).height();
+
+  $(window).bind('load', function(){
+    setTimeout(function(){
+      window.scrollTo(0,1);
+  　},1);
+  });
+
 });

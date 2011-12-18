@@ -29,7 +29,7 @@ function end_html() {
       <script src="js/jquery.cookie.js"></script>
       <script src="js/default.js"></script>';
 
-  if (is_ipad()) {
+  if (is_ipad() || is_iphone()) {
     echo '<script src="js/ios.js"></script>';
   }
 

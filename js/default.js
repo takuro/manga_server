@@ -23,7 +23,6 @@ $(function(){
   /*
    * events
    */
-
   // 単ページ切り替え
   $("#switch_half_page").click(function(){
     var value = is_("half");
@@ -85,22 +84,26 @@ $(function(){
   });
 
   // 蔵書一覧、設定 ON / OFF
-  $("#paint_index, #paint_settings").click(function(){
+  $("#paint_index, #paint_settings, #paint_help").click(function(){
     var _id = $(this).attr("id");
     var target_offset = $('#' + _id).offset().top;
     var paint = null;
-    var hide = null;
 
     if (_id === "paint_settings") {
       paint = $("#settings");
-      hide = $("#index");
-    } else {
+      $("#index").hide();
+      $("#help").hide();
+    } else if (_id === "paint_index") {
       paint = $("#index");
-      hide = $("#settings");
+      $("#settings").hide();
+      $("#help").hide();
+    } else {
+      paint = $("#help");
+      $("#index").hide();
+      $("#settings").hide();
     }
     $(".selected").removeClass("selected");
 
-    hide.hide();
     if (paint.css('display') == 'none') {
       paint.animate({ height: "show" }, "fast");
       $(this).addClass("selected");
@@ -153,7 +156,6 @@ $(function(){
   /*
    * functions
    */
-
   function window_resize() {
     var window_width = $(window).width();
     var window_height = $(window).height();
