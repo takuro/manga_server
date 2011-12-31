@@ -4,7 +4,6 @@
 
   // [ToDo]
   // * バリデート（個人利用想定なので優先度低）
-  // * 同じ ZIP ファイル名、同じ画像のファイル名の場合、ブラウザのキャッシュのせいで画像の表示が乱れる
 
   require_once 'settings.php';
   require_once 'functions.php';
@@ -22,14 +21,16 @@
   // ZIP ファイル読み込み
   $count = 0;
   $read_count = 0;
-  $zip_file = COMIC_DIR."/".$dir[$id];
-  $zip_filename = get_filename_without_ext($zip_file);
-  $comic = zip_open($zip_file);
+  $zip_path = COMIC_DIR."/".$dir[$id];
+  $manga_title = get_filename_without_ext($zip_path);
+
+  $comic = zip_open($zip_path);
   if (is_resource($comic)) { 
-    $file_name = "";
+    $inzip_path = "";
     while (($entry = zip_read($comic)) !== false) { 
-      $file_name = zip_entry_name($entry);
-      $file_name = mb_convert_encoding($file_name, "UTF-8", $enc);
+      $inzip_path = zip_entry_name($entry);
+#     $inzip_path = mb_convert_encoding($inzip_path, "UTF-8", $enc);
+      $cache_name = md5($zip_path."/".$inzip_path).'.'.get_ext($inzip_path);
 
       // もう走査しなくていい
       if ($count > $page + LOOKAHEAD) {
@@ -37,31 +38,25 @@
       }
 
       // 画像か否か
-      if (!is_image($file_name, $image_ext)) {
+      if (!is_image($inzip_path, $image_ext)) {
         continue;
       }
 
       // 画像読み込むべきか
       if ($count == $page || $count == $page + 1) {
-        $pages[$read_count++] = $file_name;
+        $pages[$read_count++] = $cache_name;
       }
 
       // 画像をキャッシュに格納すべきか
       if ($count >= $page && $count < $page + LOOKAHEAD) {
-        $dirname = dirname($file_name);
-
-        if ($dirname != '.' && !file_exists(CACHE.'/'.$dirname)) {
-          mkdir(CACHE.'/'.$dirname, 0777, true);
-        }
-
         $data = zip_entry_read($entry, zip_entry_filesize($entry));
-        file_put_contents(CACHE.'/'.$zip_filename.'_'.$file_name, $data);
+        file_put_contents(CACHE.'/'.$cache_name, $data);
       }
 
       $count++;
     } 
   } else { 
-    die("[ERR]ZIP_OPEN : ".$zip_file); 
+    die("[ERR]ZIP_OPEN : ".$zip_path); 
   }
 
   zip_close($comic);
@@ -70,11 +65,12 @@
   if ($read_count < 1) {
     echo '{"msg": "ERROR"}';
   } else {
-    $response = '{"title":"'.$zip_filename.'", "files":[';
+    $response = '{"title":"'.$manga_title.'", "files":[';
+
 
     $send_imgs = 2;
     for ($i = 0; $i < $send_imgs; $i++) {
-      $path = rawurlencode(CACHE.'/'.$zip_filename.'_'.$pages[$i]);
+      $path = CACHE.'/'.$pages[$i];
       $response .= '"'.$path.'"';
       if ($i + 1 < $send_imgs) {
         $response .= ',';

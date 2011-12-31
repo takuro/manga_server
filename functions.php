@@ -21,10 +21,16 @@ function get_ext($filename) {
   return substr(strrchr($filename, '.'), 1);
 }
 
+function get_filename($filename) {
+  $filename = trim($filename);
+  return end(explode('/', $filename));
+
+}
+
 function get_filename_without_ext($filename) {
   $filename = trim($filename);
-  $path = pathinfo($filename);
-  return $path["filename"];
+  #pathinfo が日本語パスだとうまくいかなかった。
+  return strstr(end(explode('/', $filename)), '.', true);
 }
 
 function is_jpg($ext) {
@@ -47,7 +53,8 @@ function is_png($ext) {
 
 function cache_clean() {
   if (dir_size(CACHE) > CACHELIMIT) {
-    exec('rm -f '.CACHE.'/*');
+    #dir_treeとthumb.jsonを除外して削除する。
+    shell_exec('find '.CACHE.' ! -name thumbs.json ! -name dir_tree -type f -exec rm {} \; ');
     return true;
   } else {
     return false;
