@@ -2,14 +2,12 @@
   require_once 'settings.php';
   require_once 'functions.php';
   require_once 'template.php';
+  require_once 'sqlite.php';
 
+  // データベース再構築
+  init_tables();
   $dir = get_dir_tree();
   $files = count($dir);
-
-  if (file_exists(THUMBSFILE)) {
-    unlink(THUMBSFILE);
-  }
-  touch(THUMBSFILE);
 
   for ($i = 0; $i < $files; $i++) {
     $count = 1;
@@ -36,12 +34,13 @@
           $data = zip_entry_read($entry, zip_entry_filesize($entry));
           $ext = get_ext($file_name);
           $thumb = array(
+            "id" => $i+1,
             "zip" => $zip_file,
-            "zip_count" => $i,
             "filepath" => CACHE."/thumb.".$ext,
             "ext" => $ext
           );
           file_put_contents($thumb["filepath"], $data);
+
           $r = make_thumbnail($thumb);
           if ($r) {
             save_thumbnail($thumb);

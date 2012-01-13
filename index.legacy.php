@@ -2,8 +2,8 @@
   require_once 'settings.php';
   require_once 'template.php';
   require_once 'functions.php';
-  require_once 'sqlite.php';
 
+  dir_tree();
   $tree = get_dir_tree();
   start_html();
 ?>
@@ -42,18 +42,12 @@
   } else {
 ?>
     <a class="controller next next_control left_control">1 ページ進む</a>
-    <a class="controller previous previous_control right_control">1 ページ戻る</a>
-    <div class="move_page_wrapper">
-      <input type="range" name="slider" id="slider_controller" value="1" min="1" max="1" />
-      <input type="number" name="current_page" id="current_page" value="0" min="1" max="1" />
-      / <span id="all_page"></span>
-    </div>
-    <div class="clear"></div>
     <a class="controller next_file next_control left_control">次のファイル</a>
     <a id="switch_half_page" class="controller ">単ページ切替</a>
     <a id="paint_index" class="selected">蔵書一覧</a>
     <a id="paint_settings">設定</a>
     <a id="paint_help">使い方</a>
+    <a class="controller previous previous_control right_control">1 ページ戻る</a>
     <a class="controller previous_file previous_control right_control">前のファイル</a>
 <?php
   }
@@ -61,42 +55,12 @@
   </nav>
 
   <nav id="index">
-    <section>
     <?php
-      $count = 1;
-      $previous_path = null;
-      foreach ($tree as $t) {
-        $path = explode("/", $t);
-        $steps = count($path);
-
-        $current_path = '';
-        if ($steps > 1) {
-          for ($i = 0; $i < $steps - 1; $i++) {
-            $current_path .= $path[$i].' ';
-          }
-        }
-
-        if ($previous_path !== $current_path) {
-          if (!is_null($previous_path)) {
-            echo '</ul></section><section>';
-          }
-
-          if (empty($current_path)) {
-            echo '<h1>未分類</h1>';
-          } else {
-            echo '<h1>'.trim($current_path).'</h1>';
-          }
-          echo '<ul>';
-        }
-
-        echo '<li><a id="comic_'.$count.'" class="comic_title" title="'.$t.'">'.$t.'</a></li>';
-
-        $previous_path = $current_path;
-        $count++;
+      $count = count($tree);
+      for ($i = 0; $i < $count; $i++) {
+        echo '<a id="comic_'.$i.'" class="comic_title" tabindex="'.($i+1).'" title="'.$tree[$i].'">'.$tree[$i].'</a>';
       }
-      echo '</ul>';
     ?>
-    </section>
   </nav>
 
   <section id="settings">
@@ -123,7 +87,6 @@
           標準設定：画面の左側をクリックして次のページに移動
         </span>
       </li>
-
       <li id="right_paginate_wrapper">
         <?php
           if (empty($_COOKIE["right_paginate"])) {
@@ -181,7 +144,6 @@
           まだきちんと動かないかもしれません。漫画ファイルが多いと時間がかかります。
         </span>
       </li>
-
     </ul>
   </section>
 
@@ -225,6 +187,9 @@
       <li>前のページに移動するときは「 1 ページ戻る」をクリック。</li>
     </ul>
   </section>
+
+  <input type="hidden" id="current_title" name="current_title" value="" />
+  <input type="hidden" id="current_page" name="current_page" value="" />
 
 <?php
   end_html();

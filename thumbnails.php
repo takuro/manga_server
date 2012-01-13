@@ -3,19 +3,16 @@
 
   require_once 'settings.php';
   require_once 'functions.php';
+  require_once 'sqlite.php';
 
-  if (!$handle = fopen(THUMBSFILE, "rb")) {
-    die("[ERR]FILE OPEN : THUMBSFILE");
+  $r = select("SELECT id, cover FROM comics;");
+  $data = explode("\n", $r);
+
+  $covers = Array();
+  foreach($data as $d) {
+    $cover = explode(":/:", $d);
+    $covers[] = '{"id":"'.trim($cover[0]).'", "data":"'.trim($cover[1]).'"}';
   }
 
-  $data = array();
-  while (($buffer = fgets($handle, 512000)) !== false) {
-    $data[] = $buffer;
-  }
-  if (!feof($handle)) {
-    echo "Error: unexpected fgets() fail\n";
-  }
-  fclose($handle);
-
-  echo '['.implode(',', $data).']';
+  echo '['.implode(',', $covers).']';
 ?>

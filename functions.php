@@ -1,5 +1,7 @@
 <?php
 
+require_once 'sqlite.php';
+
 $enc = "eucjp-win, sjis-win, ASCII, JIS, UTF-8, EUC-JP, SJIS";
 
 function is_iphone() {
@@ -53,8 +55,8 @@ function is_png($ext) {
 
 function cache_clean() {
   if (dir_size(CACHE) > CACHELIMIT) {
-    #dir_treeとthumb.jsonを除外して削除する。
-    shell_exec('find '.CACHE.' ! -name thumbs.json ! -name dir_tree -type f -exec rm {} \; ');
+    // キャッシュディレクトリ内には画像のみ格納するよう変更したので戻す。
+    shell_exec('rm -f '.CACHE.'/*');
     return true;
   } else {
     return false;
@@ -77,7 +79,7 @@ function dir_size($dir) {
   return $mas;
 }
 
-function get_dir_tree() {
+function get_dir_tree_old() {
   if (!$handle = fopen(DIRTREE, "rb")) {
     die("[ERR]FILE OPEN : get_dir_tree");
   }
@@ -95,26 +97,14 @@ function get_dir_tree() {
 }
 
 function dir_tree() {
-  if (file_exists(DIRTREE)) {
-    unlink(DIRTREE);
-  }
-  touch(DIRTREE);
-
   fn_directory_recursion(COMIC_DIR, "!.*/,*.".COMIC_EXT, "dir_tree_callback");
 }
 
 function dir_tree_callback($path) {
-  if (!$handle = fopen(DIRTREE, "ab")) {
-    die("[ERR]FILE OPEN : dir_tree_callback");
-  }
-
   $length = mb_strlen(COMIC_DIR."/");
-  $path = mb_substr($path, $length);
-  if (fwrite($handle, $path."\r\n") === false) {
-    die("[ERR]FILE WRITE : dir_tree_callback");
-  }
-
-  fclose($handle);
+  $path = trim(mb_substr($path, $length));
+  $title = get_filename_without_ext($path);
+  query("INSERT INTO comics (title, zip_path) values ('".$title."', '".$path."')");
 }
 
 function save_thumbnail($thumb) {
@@ -127,18 +117,7 @@ function save_thumbnail($thumb) {
   }
 
   $img_str = 'data:image/'.$ext.';base64,'.$img_str;
-  //echo '<img src="'.$img_str.'" />';
-
-  if (!$handle = fopen(THUMBSFILE, "ab")) {
-    die("[ERR]FILE OPEN : save_thumbnail");
-  }
-
-  $text = '{"id":"'.$thumb["zip_count"].'", "data":"'.$img_str.'"}';
-  if (fwrite($handle, $text."\r\n") === false) {
-    die("[ERR]FILE WRITE : dir_tree_callback");
-  }
-
-  fclose($handle);
+  query("UPDATE comics SET cover = '".$img_str."' WHERE id = ".$thumb["id"]);
 }
 
 function make_thumbnail($file) {
@@ -164,30 +143,43 @@ function make_thumbnail($file) {
     $rate = $w / $org["w"];
     $new = array(
       "w" => $w,
-      "h" => $org["h"] * $rate
+      "h" => intval($org["h"] * $rate)
     );
   } else {
     $h = MAXHEIGHTTHUMB;
     $rate = $h / $org["h"];
     $new = array(
-      "w" => $org["w"] * $rate,
+      "w" => intval($org["w"] * $rate),
       "h" => $h 
     );
   }
 
-  $new_image = imagecreatetruecolor($new["w"], $new["h"]);
-  $r = imagecopyresampled(
-    $new_image, $image, 0, 0, 0, 0,
-    $new["w"],$new["h"],$org["w"],$org["h"]);
+  $r = false;
+  if (USEIMAGEMAGICK) {
+    $cmd = "convert ";
+    if (is_jpg($file["ext"])) {
+      $cmd .= '-define jpeg:size='.$new["w"].'x'.$new["h"];
+    }
+    $cmd .= ' -resize '.$new["w"].'x'.$new["h"].' -quality '.THUMBQUALITY.' '.$file["filepath"].' '.$file["filepath"];
+    $r = system($cmd);
+    if ($r !== false) {
+      $r = true;
+    }
+  } else {
+    $new_image = imagecreatetruecolor($new["w"], $new["h"]);
+    $r = imagecopyresampled(
+      $new_image, $image, 0, 0, 0, 0,
+      $new["w"],$new["h"],$org["w"],$org["h"]);
 
-  imagedestroy($image);
-  if ($r === false) {
+    if ($r === false) {
+      imagedestroy($new_image);
+      return false;
+    }
+    $r = imagejpeg($new_image, $file["filepath"], THUMBQUALITY);
     imagedestroy($new_image);
-    return false;
   }
+  imagedestroy($image);
 
-  $r = imagejpeg($new_image, $file["filepath"], THUMBQUALITY);
-  imagedestroy($new_image);
   return $r;
 }
 

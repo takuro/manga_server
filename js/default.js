@@ -2,7 +2,10 @@ var cookie_keys = {
   "half" : "is_half_page_mode",
   "right_click" : "right_click_to_next",
   "right_paginate" : "right_paginate",
-  "background_color" : "background_color"
+  "background_color" : "background_color",
+  "current_title" : "current_title",
+  "current_page" : "current_page",
+  "current_comic_pages" : "current_comic_pages",
 }
 
 var keyboard_shortcuts = {
@@ -12,6 +15,8 @@ var keyboard_shortcuts = {
   "68" : "key_down('d')",
 }
 
+var preload_images = 4;
+
 $(function(){
   window_resize();
   change_half_mode();
@@ -19,6 +24,7 @@ $(function(){
   change_paginate();
   change_background_color();
   get_covers();
+  bookmark();
 
   /*
    * events
@@ -130,7 +136,7 @@ $(function(){
     } else {
       $("#full_page").animate({ height: "show" }, "slow");
     }
-    get_page(id, 0);
+    get_page(id, 1);
   });
 
   // 次のページ表示
@@ -146,12 +152,32 @@ $(function(){
     move_page_2();
   });
 
-
   // 次のファイルへ
   $(".next_file").click(function(){ move_file("next", 1); });
 
   // 前のファイルへ
   $(".previous_file").click(function(){ move_file("previous", 1); });
+
+  // スライダを動かした
+  $("#slider_controller").change(function(event) {
+    if (get_current_page() < $(this).val()) {
+      move_page("next", 1);
+    } else {
+      move_page("previous", 1);
+    }
+  });
+
+  // ページ数を変更した
+  $("#current_page").change(function(event) {
+    var current_page = get_current_page();
+    var move = $(this).val();
+      
+    if (current_page < move) {
+      move_page("next", move - current_page);
+    } else if (move < current_page) {
+      move_page("previous", current_page - move);
+    }
+  });
 
   /*
    * functions
@@ -206,9 +232,13 @@ $(function(){
     } else if(toward === "previous") {
       var page = get_current_page() - move;
     }
-    if (page < 0) {
-      page = 0;
+
+    if (page < 1) {
+      page = 1;
       move_file("previous", 1);
+    } else if (page > get_current_comic_pages()){
+      page = 1;
+      move_file("next", 1);
     } else {
       get_page(id, page);
     }
@@ -229,10 +259,10 @@ $(function(){
         id += move;
       }
     }
-    if (id < 0) {
-      id = 0;
+    if (id < 1) {
+      id = 1;
     }
-    get_page("comic_" + id, 0);
+    get_page("comic_" + id, 1);
   }
 
   // ページの取得
@@ -240,13 +270,27 @@ $(function(){
     $.ajax({ url: "view.php", data: "id=" + id + "&page=" + page,
       success: function(json) {
         if (json.msg !== "ERROR") {
+
           set_current_title(id, json.title);
           set_current_page(page);
+          set_current_comic_pages(json.pages);
 
           paint("#half_page_image", json.files[0]);
           paint("#page_1", json.files[0]);
           paint("#page_2", json.files[1]);
+
+          var load_img = new Array();
+          for (var i = 0; i < preload_images; i++) {
+            load_img[i] = json.files[i+2];
+          }
+          preload(load_img);
+
           image_size_reduction();
+          set_paginate_ui();
+
+          $(".comic_title").removeClass("reading");
+          $("#" + id).addClass("reading");
+
         } else {
           move_file("undefined", 1);
         }
@@ -255,25 +299,46 @@ $(function(){
     });
   }
 
+  // ページ送りの UI を操作
+  function set_paginate_ui() {
+    var current_page = get_current_page();
+    var current_comic_pages = get_current_comic_pages();
+    $("#all_page").text(current_comic_pages);
+    $("#slider_controller").attr("max", current_comic_pages);
+    $("#slider_controller").attr("value", current_page);
+    $("#current_page").attr("max", current_comic_pages);
+    $("#current_page").attr("value", current_page);
+  }
+
   // 現在表示している漫画の ID を保存
   function set_current_title(id, title) {
     $("title").text(title);
-    $("#current_title").attr("value", id);
+    $.cookie(cookie_keys["current_title"], id);
   }
 
   // 現在表示している漫画の ID を取得
   function get_current_title() {
-    return $("#current_title").attr("value");
+    return $.cookie(cookie_keys["current_title"]);
   }
 
   // 現在表示している漫画のページを保存
   function set_current_page(page) {
-    $("#current_page").attr("value", page);
+    $.cookie(cookie_keys["current_page"], page);
   }
 
   // 現在表示している漫画のページを取得
   function get_current_page() {
-    return parseInt($("#current_page").attr("value"));
+    return parseInt($.cookie(cookie_keys["current_page"]));
+  }
+
+  // 現在表示している漫画のページ数を保存
+  function set_current_comic_pages(pages) {
+    $.cookie(cookie_keys["current_comic_pages"], pages);
+  }
+
+  // 現在表示している漫画のページ数を取得
+  function get_current_comic_pages() {
+    return $.cookie(cookie_keys["current_comic_pages"]);
   }
 
   // 画像描画
@@ -321,13 +386,6 @@ $(function(){
         "max-width": "",
       });
     }
-
-    /*
-    _img.css({
-      "max-height": img_height + "px",
-      "max-width" : img_width + "px"
-    });
-    */
   }
 
   // ページ移動変更
@@ -429,10 +487,33 @@ $(function(){
           $("#comic_" + _this.id).html('<img src="' + _this.data + '" />');
         });
       }, error: function(e) {
-        console.error(e);
+        //console.error(e);
       }
     });
   }
 
+  // しおり
+  function bookmark() {
+    var current_title = get_current_title();
+    var current_page = get_current_page();
+    if (current_title && current_page) {
+      $("#menu a").removeClass("controller");
+      $(".selected").removeClass("selected");
+
+      if (is_("half")) {
+        $("#half_page").animate({ height: "show" }, "slow");
+      } else {
+        $("#full_page").animate({ height: "show" }, "slow");
+      }
+      get_page(current_title, current_page);
+    }
+  }
+
 });
 
+function preload(imgs){
+  for (var i = 0; i < imgs.length; i++) {
+    var imgObj = new Image();
+    imgObj.src = imgs[i];
+  }
+}

@@ -1,3 +1,4 @@
 *.swp
 cache/*
 robots.txt
+*.db

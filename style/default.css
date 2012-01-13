@@ -101,6 +101,20 @@ img {
   text-align: left;
 }
 
+#menu .next,
+#menu .previous {
+  width: 20%;
+  display: block;
+}
+
+#slider_controller {
+  width: 70%;
+}
+#current_page {
+  width: 10%;
+  text-align: center;
+}
+
 .right_page {
   float: right;
   text-align: left;
@@ -166,11 +180,28 @@ input[type="checkbox"] {
 }
 
 #index img:hover {
-  background: rgba(200, 200, 200, 1);
+  background: rgba(251, 184, 41, 0.5);
+}
+
+.reading {
+  background: rgba(251, 184, 41, 0.5);
+  padding: 8px;
+}
+
+#index li {
+  list-style: none;
+  display: inline-block;
+  margin: 0;
 }
 
 .selected {
   box-shadow: 0px 2px 3px -2px #aaa;
+}
+
+.move_page_wrapper {
+  width: 50%;
+  display: block;
+  margin: 0 auto;
 }
 
 footer{margin:10px; text-align:center;font-size:0.7em;}
