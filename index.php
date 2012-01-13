@@ -31,6 +31,11 @@
 ?>
     <a class="controller next next_control left_control">1 ページ進む</a>
     <a class="controller previous previous_control right_control">1 ページ戻る</a>
+    <div class="move_page_wrapper">
+      <input type="range" name="slider" id="slider_controller" value="1" min="1" max="1" />
+      <input type="number" name="current_page" id="current_page" value="0" min="1" max="1" />
+      / <span id="all_page"></span>
+    </div>
     <div class="clear"></div>
     <a class="controller next_file next_control left_control">次のファイル</a>
     <a class="controller previous_file previous_control right_control">前のファイル</a>

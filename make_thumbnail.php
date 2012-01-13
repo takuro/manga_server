@@ -5,7 +5,7 @@
   require_once 'sqlite.php';
 
   // データベース再構築
-  init_tables();
+  cache_clean();
   $dir = get_dir_tree();
   $files = count($dir);
 

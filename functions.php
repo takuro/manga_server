@@ -57,6 +57,7 @@ function cache_clean() {
   if (dir_size(CACHE) > CACHELIMIT) {
     // キャッシュディレクトリ内には画像のみ格納するよう変更したので戻す。
     shell_exec('rm -f '.CACHE.'/*');
+    init_tables();
     return true;
   } else {
     return false;
