@@ -109,8 +109,15 @@ function dir_tree_callback($path) {
 }
 
 function save_thumbnail($thumb) {
-  $imgbinary = fread(fopen($thumb["filepath"], "r"), filesize($thumb["filepath"]));
+
+  // fread で読み込む際、最大読み込みサイズを画像のサイズにしていたので、
+  // データの最後の方が読み込まれていなかったみたい。
+  $imgbinary = fread(fopen($thumb["filepath"], "rb"), filesize($thumb["filepath"]) * 2);
   $img_str = base64_encode($imgbinary);
+
+  // メモリ解放（効果なし？）
+  unset($imgbinary);
+
   $ext = $thumb["ext"];
 
   if (strcasecmp($ext, "jpg") === 0) {
@@ -119,6 +126,10 @@ function save_thumbnail($thumb) {
 
   $img_str = 'data:image/'.$ext.';base64,'.$img_str;
   query("UPDATE comics SET cover = '".$img_str."' WHERE id = ".$thumb["id"]);
+
+  // メモリ解放（効果なし？）
+  unset($img_str);
+  return true;
 }
 
 function make_thumbnail($file) {
