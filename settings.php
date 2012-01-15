@@ -11,7 +11,6 @@
 
   // 漫画のファイルが格納されているディレクトリ
   // 公開されている必要はありません
-  //define("COMIC_DIR", "../comics");
   define("COMIC_DIR", "../comics");
 
   // キャッシュディレクトリ
@@ -19,15 +18,35 @@
   // 公開ディレクトリである必要があります。
   define("CACHE", "cache");
 
+  // sqlite3 の実行ファイルまでのパス
+  // sqlite3 実行ファイル自体を含みます
+  // Linux 用の実行ファイルが同梱されています。
+  // 以下の URL より自分の環境にあった実行ファイルをダウンロードします。
+  // http://www.sqlite.org/download.html
+  // （ Windows 環境での動作は保証していません。）
+  define("SQLITE", APP_ROOT."/db/sqlite-shell-linux-x86-3070900");
+
+  // データベースのファイルパス
+  define("DB", APP_ROOT."/db/manga_server.db");
+
+  // 何番目の画像を表紙にするか
+  // デフォルトは 1 枚目
+  define("FORCOVER", 1);
+
+  // 先読みする画像数
+  // default.js の preload_images も同じ数字にしてください。
+  define("PRELOAD", 4);
+
+  // キャッシュディレクトリのサイズ制限
+  // 設定したバイト数を超えると中身を空にする
+  // デフォルト約 100 MB
+  define("CACHELIMIT", 100000000);
+
   // ImageMagickを使ってサムネイルを生成する
   // 以下を true に変更してください。
   // ImageMagick がインストールされていない場合は、true にしないでください。
   // * shell_exec で convert コマンドを実行します。
   define("USEIMAGEMAGICK", false);
-
-  // sqlite3 の実行ファイルまでのパス
-  // sqlite3 実行ファイル自体を含みます
-  define("SQLITE", APP_ROOT."/db/sqlite3");
 
   /*----------- 以下の設定はあまりいじらないで ----------*/
 
@@ -40,19 +59,6 @@
   // 大文字小文字は区別するので両方書く（検索が早いから）
   $image_ext = array("jpg", "jpeg", "png", "JPG", "JPEG", "PNG");
 
-  // 一度にキャッシュにコピーする画像数
-  // 大きくすると最初のページが表示されるのが遅くなるかも
-  define("LOOKAHEAD", 300);
-
-  // キャッシュディレクトリのサイズ制限
-  // 設定したバイト数を超えると中身を空にする
-  // デフォルト約 100 MB
-  define("CACHELIMIT", 100000000);
-
-  // 何番目の画像を表紙にするか
-  // デフォルトは 1 枚目
-  define("FORCOVER", 2);
-
   // サムネイルの最大幅
   define("MAXWIDTHTHUMB", 90);
 
@@ -62,17 +68,6 @@
   // サムネイルの品質
   // 70 〜 90 くらいで、最大 100
   define("THUMBQUALITY", 90);
-
-  // サムネイルを保存するファイル
-  // サムネイルは base64 で文字列になってる
-  define("THUMBSFILE", CACHE."/thumbs.json");
-
-  // データベースのファイルパス
-  define("DB", APP_ROOT."/db/manga_server.db");
-
-  // 先読みする画像数
-  // default.js の preload_images も同じ数字にしてください。
-  define("PRELOAD", 4);
 
   /*----------- 初期化 ----------*/
   require_once 'sqlite.php';
