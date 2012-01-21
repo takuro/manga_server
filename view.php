@@ -48,7 +48,7 @@
 
   function cached($comics_id) {
     $r = select("SELECT id from images where comics_id = ".$comics_id." LIMIT 1");
-    if ($r === false) {
+    if (empty($r)) {
       return false;
     } else {
       return true;
@@ -65,7 +65,9 @@
     $inzip_path = "";
     $count = 0;
     $files = null;
-    query("BEGIN");
+
+    $db = new SQLite3(DB);
+    $db->exec("BEGIN DEFERRED;");
     while (($entry = zip_read($comic)) !== false) { 
       $inzip_path = zip_entry_name($entry);
       $cache_name = md5($zip_path."/".$inzip_path).'.'.get_ext($inzip_path);
@@ -80,12 +82,12 @@
       file_put_contents($filepath, $data);
 
       $count++;
-      query("INSERT INTO images (comics_id, page, filepath) VALUES (".$comics_id.", ".$count.", '".$filepath."')");
+      query("INSERT INTO images (comics_id, page, filepath) VALUES (".$comics_id.", ".$count.", '".$filepath."')", $db);
     } 
     zip_close($comic);
 
-    query("UPDATE comics SET pages = ".$count." WHERE id = ".$comics_id);
-    query("COMMIT");
+    query("UPDATE comics SET pages = ".$count." WHERE id = ".$comics_id, $db);
+    $db->exec("COMMIT;");
   }
 ?>
 

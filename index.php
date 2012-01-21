@@ -2,7 +2,6 @@
   require_once 'settings.php';
   require_once 'template.php';
   require_once 'functions.php';
-  require_once 'sqlite.php';
 
   $tree = get_dir_tree();
   start_html();

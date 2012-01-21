@@ -5,13 +5,10 @@
   require_once 'functions.php';
   require_once 'sqlite.php';
 
-  $r = select("SELECT id, cover FROM comics;");
-  $data = explode("\n", $r);
-
+  $data = select("SELECT id, cover FROM comics;");
   $covers = Array();
   foreach($data as $d) {
-    $cover = explode(":/:", $d);
-    $covers[] = '{"id":"'.trim($cover[0]).'", "data":"'.trim($cover[1]).'"}';
+    $covers[] = '{"id":"'.$d["id"].'", "data":"'.$d["cover"].'"}';
   }
 
   echo '['.implode(',', $covers).']';

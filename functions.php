@@ -32,7 +32,8 @@ function get_filename($filename) {
 function get_filename_without_ext($filename) {
   $filename = trim($filename);
   #pathinfo が日本語パスだとうまくいかなかった。
-  return strstr(end(explode('/', $filename)), '.', true);
+  $path = explode('/', $filename);
+  return strstr(end($path), '.', true);
 }
 
 function is_jpg($ext) {
