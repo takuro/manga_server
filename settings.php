@@ -16,7 +16,7 @@
   // キャッシュディレクトリ
   // Web サーバを動かすユーザに書き込み権限を与えてください
   // 公開ディレクトリである必要があります。
-  define("CACHE", APP_ROOT."/cache");
+  define("CACHE", "cache");
 
   // データベースファイルが格納されるディレクトリ
   define("DB_DIR", APP_ROOT."/db");
