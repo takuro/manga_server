@@ -16,18 +16,13 @@
   // キャッシュディレクトリ
   // Web サーバを動かすユーザに書き込み権限を与えてください
   // 公開ディレクトリである必要があります。
-  define("CACHE", "cache");
+  define("CACHE", APP_ROOT."/cache");
 
-  // sqlite3 の実行ファイルまでのパス
-  // sqlite3 実行ファイル自体を含みます
-  // Linux 用の実行ファイルが同梱されています。
-  // 以下の URL より自分の環境にあった実行ファイルをダウンロードします。
-  // http://www.sqlite.org/download.html
-  // （ Windows 環境での動作は保証していません。）
-  define("SQLITE", APP_ROOT."/db/sqlite-shell-linux-x86-3070900");
+  // データベースファイルが格納されるディレクトリ
+  define("DB_DIR", APP_ROOT."/db");
 
   // データベースのファイルパス
-  define("DB", APP_ROOT."/db/manga_server.db");
+  define("DB", DB_DIR."/manga_server.db");
 
   // 何番目の画像を表紙にするか
   // デフォルトは 1 枚目
@@ -71,6 +66,22 @@
 
   /*----------- 初期化 ----------*/
   require_once 'sqlite.php';
+  if (!file_exists(DB_DIR)) {
+    die("Fatal error : ".DB_DIR." is not exist.");
+  }
+
+  if (!is_writable(DB_DIR)) {
+    die("Fatal error : Permission denied. ( ".DB_DIR." )");
+  }
+
+  if (!file_exists(CACHE)) {
+    die("Fatal error : ".CACHE." is not exist.");
+  }
+
+  if (!is_writable(CACHE)) {
+    die("Fatal error : Permission denied. ( ".CACHE." )");
+  }
+
   if (!file_exists(DB)) {
     init_tables();
   }
