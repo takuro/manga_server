@@ -25,9 +25,6 @@
   </article>
 
   <nav id="menu">
-<?php
-  if (is_iphone()) {
-?>
     <a class="controller next next_control left_control">1 ページ進む</a>
     <a class="controller previous previous_control right_control">1 ページ戻る</a>
     <div class="move_page_wrapper">
@@ -36,6 +33,9 @@
       / <span id="all_page"></span>
     </div>
     <div class="clear"></div>
+<?php
+  if (is_iphone()) {
+?>
     <a class="controller next_file next_control left_control">次のファイル</a>
     <a class="controller previous_file previous_control right_control">前のファイル</a>
     <div class="clear"></div>
@@ -45,14 +45,6 @@
 <?php
   } else {
 ?>
-    <a class="controller next next_control left_control">1 ページ進む</a>
-    <a class="controller previous previous_control right_control">1 ページ戻る</a>
-    <div class="move_page_wrapper">
-      <input type="range" name="slider" id="slider_controller" value="1" min="1" max="1" />
-      <input type="number" name="current_page" id="current_page" value="0" min="1" max="1" />
-      / <span id="all_page"></span>
-    </div>
-    <div class="clear"></div>
     <a class="controller next_file next_control left_control">次のファイル</a>
     <a id="switch_half_page" class="controller ">単ページ切替</a>
     <a id="paint_index" class="selected">蔵書一覧</a>
@@ -179,7 +171,9 @@
       </li>
 
       <li>
-        <a href="make_thumbnail.php">漫画の表紙を生成する</a>
+        <a id="make_thumbnail">漫画の表紙を生成する</a>
+        <span id="disable_make_thumbnail">漫画の表紙を生成する</span>
+        <progress id="making_thumbnail"></progress>
         <br />
         <span class="notice">
           まだきちんと動かないかもしれません。漫画ファイルが多いと時間がかかります。

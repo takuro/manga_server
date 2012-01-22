@@ -4,6 +4,21 @@
   require_once 'template.php';
   require_once 'sqlite.php';
 
+  if (DONT_MAKE_THUMBNAIL) {
+    die("Fatal error : Can not make thumbnail.");
+    return;
+  }
+
+  $shell_exec = true;
+  if (!is_null($argv) && !empty($argv[1])) {
+    $shell_exec = false;
+  }
+  
+  if (ASYNC_MAKE_THUMBNAILS && $shell_exec) {
+    exec("php ".APP_ROOT."/make_thumbnail.php true > /dev/null &");
+    return;
+  }
+
   // データベース再構築
   cache_clean();
   $dir = get_dir_tree();
@@ -55,6 +70,7 @@
     zip_close($comic);
   }
 
-  header('Location: index.php');
+  echo 'ok';
+  //header('Location: index.php');
 
 ?>

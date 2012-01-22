@@ -179,6 +179,25 @@ $(function(){
     }
   });
 
+  // 表紙作成
+  $("#make_thumbnail").click(function(event) {
+    var _this = $(this);
+    _this.hide();
+    $("#disable_make_thumbnail").show();
+    $("#making_thumbnail").show();
+
+    $.ajax({ url: "make_thumbnail.php",
+      success: function(json) {
+        get_covers();
+
+        _this.show();
+        $("#disable_make_thumbnail").hide();
+        $("#making_thumbnail").hide();
+      }, error: function(e) {
+      }
+    });
+  });
+
   /*
    * functions
    */
@@ -445,34 +464,22 @@ $(function(){
   }
 
   function move_page_1() {
+    var range = 2;
+    if (is_("half")) { range = 1; }
     if (is_("right_paginate")) {
-      if (is_("right_click")) {
-        move_page("previous", 2);
-      } else {
-        move_page("next", 2);
-      }
+      if (is_("right_click")) { move_page("previous", range); } else { move_page("next", range); }
     } else {
-      if (is_("right_click")) {
-        move_page("next", 2);
-      } else {
-        move_page("previous", 2);
-      }
+      if (is_("right_click")) { move_page("next", range); } else { move_page("previous", range); }
     }
   }
 
   function move_page_2() {
+    var range = 2;
+    if (is_("half")) { range = 1; }
     if (is_("right_paginate")) {
-      if (is_("right_click")) {
-        move_page("next", 2);
-      } else {
-        move_page("previous", 2);
-      }
+      if (is_("right_click")) { move_page("next", range); } else { move_page("previous", range); }
     } else {
-      if (is_("right_click")) {
-        move_page("previous", 2);
-      } else {
-        move_page("next", 2);
-      }
+      if (is_("right_click")) { move_page("previous", range); } else { move_page("next", range); }
     }
   }
 

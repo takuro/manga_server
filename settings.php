@@ -43,6 +43,11 @@
   // * shell_exec で convert コマンドを実行します。
   define("USEIMAGEMAGICK", false);
 
+  // サムネイルの作成を非同期で実施する
+  // サーバ上で PHP コマンドが使える場合のみ true にしてください。
+  // [注意] Windows での動作未確認。
+  define("ASYNC_MAKE_THUMBNAILS", false);
+
   /*----------- 以下の設定はあまりいじらないで ----------*/
 
   // 対応する圧縮形式（この形式以外のファイルは読み込まない）
@@ -63,6 +68,9 @@
   // サムネイルの品質
   // 10 から 100 で指定、大きいほど高画質で重い
   define("THUMBQUALITY", 90);
+
+  // サイト公開用
+  define("DONT_MAKE_THUMBNAIL", true);
 
   /*----------- 初期化 ----------*/
   require_once 'sqlite.php';
