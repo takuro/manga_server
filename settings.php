@@ -70,7 +70,7 @@
   define("THUMBQUALITY", 90);
 
   // サイト公開用
-  define("DONT_MAKE_THUMBNAIL", true);
+  define("DONT_MAKE_THUMBNAIL", false);
 
   /*----------- 初期化 ----------*/
   require_once 'sqlite.php';
